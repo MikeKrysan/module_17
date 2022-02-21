@@ -66,6 +66,7 @@ fun main() {
     "Ваша популярность падает!".yourHighness().quickPrint()
     "На нас напали!".yourHighness().quickPrint()
     "Нужно больше золота!".yourHighness().quickPrint()
+
 }
 
 class Kingdom {
@@ -82,7 +83,13 @@ class Kingdom {
 
     private val wheelOfFortune = WheelOfFortune()
 
+//    upgradeYourArmy(archers){   //4.2Выдаем лучникам новые луки
+//        println(it)
+//    }
 
+//    upgradeYourArmy(warriors){  //4.2 Выдаем воинам алебарды
+//        println(it)
+//    }
 
     private fun addHeirs(amount: Int) { //3.1 Переносим инициализацию персонажей в методы
         for (i in 1..4) {
@@ -126,6 +133,28 @@ class Kingdom {
         }
     }
 
+    fun upgradeYourArmy(list:List<Archer>, operation:(List<Archer>)->Int) { //4.1 Прокачаем наших солдат
+        list.forEach{
+            it.bow = "Composite bow"
+        }
+        operation(list)
+    }
+
+    fun upgradeYourWarriors(list:List<Warrior>, operation:(List<Warrior>)->Int) {   //4.1
+        list.forEach{
+            it.weapon = "halberd"
+        }
+    }
+
+    fun givegiveFunToPesants(list:List<Peasant>){   //4.3 Знакомство крестьян
+        list.forEach{peasants->
+            list.forEach{
+                if(peasants.occupation == it.occupation) println("Привет, коллега!")
+                else println("Вижу мы с вами занимаемся разным")
+            }
+        }
+    }
+
 }
 
     open class Ruler(val name: String) {
@@ -146,11 +175,11 @@ class Kingdom {
         }
     }
 
-    data class Archer(val bow: String = "Longbow", val Dagger: String) {
+    data class Archer(var bow: String = "Longbow", val Dagger: String) {
         constructor(dagger:String):this("Longbow", dagger)
     }
 
-    data class Warrior(val weapon: String)
+    data class Warrior(var weapon: String)
 
     class WheelOfFortune {
         fun coefficient():Float = (0..200).random()/100f
