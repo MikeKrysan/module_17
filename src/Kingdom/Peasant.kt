@@ -4,7 +4,11 @@ data class Peasant(val occupation: Occupation) {    //2.1Создали клас
 }
 
 enum class Occupation { //2.2 для этого используем enum
-    WORKER,
-    BILDER,
-    FARMER
+    WORKER { override fun getTaxAmount() = 1},
+    BILDER { override fun getTaxAmount() = 2},
+    FARMER { override fun getTaxAmount() = 3};
+
+    abstract fun getTaxAmount(): Int
+
+
 }

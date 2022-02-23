@@ -11,34 +11,52 @@ fun main() {
 
     println("name: ${kingdom.ruler.name} intellect: ${kingdom.ruler.intellect} power: ${kingdom.ruler.power}")
 
+    kingdom.addHeirs(4)
     kingdom.heirs.forEach(){
         println("name: ${it.name} intellect: ${it.intellect} power: ${it.power}")
     }
 
-    println(kingdom.addArchers(19))
-    println(kingdom.warriors)
+    kingdom.addArchers(19)
+    kingdom.archers.forEach(){
+        println("dagger: ${it.Dagger}, bow : ${it.bow} ")
+    }
+
+    kingdom.addWarriors(29)
+    kingdom.warriors.forEach(){
+        println("warrior: ${it.weapon}")
+    }
+
+    kingdom.addPesants(99)
+    kingdom.peasants.forEach() {
+        println("peasant: ${it.occupation}")
+    }
+
+    //kingdom.upgradeYourArchers(kingdom.archers, )
+    //kingdom.upgradeYourWarriors(kingdom.warriors, )
+
+    kingdom.givegiveFunToPesants(kingdom.peasants)
 
     //2.7 реализуем сбор налогов в королевстве:
     val workerTaxCollector = object: TaxCollector() {
-        override fun collect() {
+                override fun collect() {
             val taxGroup = kingdom.peasants.filter {
                 it.occupation == Occupation.WORKER
             }
-            kingdom.treasury +=taxGroup.size
-        }
+                kingdom.treasury +=taxGroup.size
+                    }
     }
 
     val builderTaxCollector = object: TaxCollector() {
-        override fun collect() {
+                override fun collect() {
             val taxGroup = kingdom.peasants.filter {
                 it.occupation == Occupation.BILDER
             }
             kingdom.treasury +=taxGroup.size*2
-        }
+                    }
     }
 
     val farmerTaxCollector = object: TaxCollector() {
-        override fun collect() {
+               override fun collect() {
             val taxGroup = kingdom.peasants.filter {
                 it.occupation == Occupation.FARMER
             }
@@ -46,11 +64,13 @@ fun main() {
         }
     }
 
-    workerTaxCollector.collect()
-    builderTaxCollector.collect()
-    farmerTaxCollector.collect()
+    //Оба подхода подсчета казны работают, но необходимо реализовать подсчет сбора налогов с каждой группы селян
+//    workerTaxCollector.collect()
+//    builderTaxCollector.collect()
+//    farmerTaxCollector.collect()
 
-    fun taxCalculation(groupSize: Int, multiplier: Int): Int = groupSize * multiplier   //3.2 One line функция, которая будет считать, сколько каждый сборщик налогов собрал со своей группы
+    kingdom.taxCalculation()
+
 
     //2.8 Глашатай озвучивает присутсвие короля, а также смотрим на состояние нашей казны:
     Ruler.geroldGreetings() //Его Высокое Благородие Король в здании
@@ -83,15 +103,7 @@ class Kingdom {
 
     private val wheelOfFortune = WheelOfFortune()
 
-//    upgradeYourArmy(archers){   //4.2Выдаем лучникам новые луки
-//        println(it)
-//    }
-
-//    upgradeYourArmy(warriors){  //4.2 Выдаем воинам алебарды
-//        println(it)
-//    }
-
-    private fun addHeirs(amount: Int) { //3.1 Переносим инициализацию персонажей в методы
+    fun addHeirs(amount: Int) { //3.1 Переносим инициализацию персонажей в методы
         for (i in 1..4) {
             heirs.add(Heir("Heir $i", wheelOfFortune))
         }
@@ -107,7 +119,7 @@ class Kingdom {
         }
     }
 
-    private fun addWarriors(amount: Int) {  //3.1
+    fun addWarriors(amount: Int) {  //3.1
         for (i in 0..29) {
             if (i % 2 == 0) {
                 warriors.add(Warrior("Sword"))
@@ -117,8 +129,8 @@ class Kingdom {
         }
     }
 
-    private fun addPesants(amount: Int) {   //3.1
-        for (i in 0..99) {   //2.3 Зовем крестьян
+    fun addPesants(amount: Int) {   //3.1
+        for (i in 0..3) {   //2.3 Зовем крестьян
             when {
                 i % 2 == 0 -> {
                     peasants.add(Peasant(Occupation.BILDER))
@@ -133,7 +145,7 @@ class Kingdom {
         }
     }
 
-    fun upgradeYourArmy(list:List<Archer>, operation:(List<Archer>)->Int) { //4.1 Прокачаем наших солдат
+    fun upgradeYourArchers(list:List<Archer>, operation:(List<Archer>)->Int) { //4.1 Прокачаем наших солдат
         list.forEach{
             it.bow = "Composite bow"
         }
@@ -144,6 +156,7 @@ class Kingdom {
         list.forEach{
             it.weapon = "halberd"
         }
+        operation(list)
     }
 
     fun givegiveFunToPesants(list:List<Peasant>){   //4.3 Знакомство крестьян
@@ -154,6 +167,9 @@ class Kingdom {
             }
         }
     }
+
+    //fun taxCalculation(groupSize: Int, multiplier: Int): Int = groupSize * multiplier   //3.2 One line функция, которая будет считать, сколько каждый сборщик налогов собрал со своей группы
+    fun taxCalculation() = peasants.forEach() { treasury += it.occupation.getTaxAmount() }
 
 }
 
